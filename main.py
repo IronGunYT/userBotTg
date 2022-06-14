@@ -154,7 +154,7 @@ def mention_with_text(_, msg):
 @app.on_message(filters.command('remind', prefixes='.') & filters.me)
 def create_remind(_, msg):
     """
-    Send you a reminder in is this chat.
+    Send you a reminder in this chat.
     Format: .remind time text
     Time format: number+s/m/h/d
     """
