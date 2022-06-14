@@ -4,6 +4,7 @@ from pyrogram.errors import FloodWait, MessageEmpty
 
 from time import sleep
 import codecs
+import re
 
 from config import *
 
@@ -126,6 +127,26 @@ def text_mention_all(_, msg):
     s = s[:-1]
     msg.delete()
     app.send_message(msg.chat.id, s)
+
+
+async def ping_filter(_, __, query):
+    """
+    Filter for mention_with_text function.
+    """
+    return re.fullmatch(r'@[a-zA-Z0-9_]{5,}\[.+\]', query.text)
+
+static_ping_filter = filters.create(ping_filter)
+
+
+@app.on_message(static_ping_filter & filters.me)
+def mention_with_text(_, msg):
+    """
+    Mentions a user which has nickname with text. Format: @username[text]
+    """
+    nickname, text = msg.text[1:-1].split('[')
+    msg.edit('yep')
+    msg.delete()
+    app.send_message(msg.chat.id, f'[{text}](http://t.me/{nickname})', disable_web_page_preview=True)
 
 
 app.run()
