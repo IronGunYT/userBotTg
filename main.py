@@ -5,6 +5,7 @@ from pyrogram.errors import FloodWait, MessageEmpty
 from time import sleep
 import codecs
 import re
+from threading import Timer
 
 from config import *
 
@@ -141,12 +142,45 @@ static_ping_filter = filters.create(ping_filter)
 @app.on_message(static_ping_filter & filters.me)
 def mention_with_text(_, msg):
     """
-    Mentions a user which has nickname with text. Format: @username[text]
+    Mentions a user which has nickname with text.
+    Format: @username[text]
     """
     nickname, text = msg.text[1:-1].split('[')
     msg.edit('yep')
     msg.delete()
     app.send_message(msg.chat.id, f'[{text}](http://t.me/{nickname})', disable_web_page_preview=True)
+
+
+@app.on_message(filters.command('remind', prefixes='.') & filters.me)
+def create_remind(_, msg):
+    """
+    Send you a reminder in is this chat.
+    Format: .remind time text
+    Time format: number+s/m/h/d
+    """
+    _, time_interval, content = msg.text.split(' ', maxsplit=2)
+    if time_interval[-1] == 's':
+        time_interval = int(time_interval[:-1])
+    elif time_interval[-1] == 'm':
+        time_interval = int(time_interval[:-1]) * 60
+    elif time_interval[-1] == 'h':
+        time_interval = int(time_interval[:-1]) * 60 * 60
+    elif time_interval[-1] == 'd':
+        time_interval = int(time_interval[:-1]) * 60 * 60 * 24
+
+    msg.edit('Reminder set.')
+
+    # run send reminder function in the future
+    t = Timer(time_interval, app.send_message, args=(msg.chat.id, content))
+    t.start()
+
+
+@app.on_message(filters.command('repo', prefixes='.') & filters.me)
+def send_repo(_, msg):
+    """
+    Send url to the repo.
+    """
+    msg.edit('https://github.com/IronGunYT/userBotTg')
 
 
 app.run()
