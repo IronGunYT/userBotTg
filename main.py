@@ -52,14 +52,14 @@ def beautiful_type(_, msg):
             msg.edit(formatted_message[:i]+'▒')
             sleep(0.05)
         except FloodWait as e:
-            sleep(e.x)
+            sleep(e.value)
         except MessageEmpty:
             pass
         try:
             msg.edit(formatted_message[:i+1])
             sleep(0.05)
         except FloodWait as e:
-            sleep(e.x)
+            sleep(e.value)
         except MessageEmpty:
             pass
 
