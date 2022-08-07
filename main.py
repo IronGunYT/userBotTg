@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from pyrogram import Client, filters
-from pyrogram.errors import FloodWait, MessageEmpty
+from pyrogram.errors import FloodWait, MessageEmpty, UsernameNotOccupied
 
 from time import sleep
 import codecs
@@ -181,6 +181,30 @@ def send_repo(_, msg):
     Send url to the repo.
     """
     msg.edit('https://github.com/IronGunYT/userBotTg')
+
+
+@app.on_message(filters.command('mega_invite', prefixes='.') & filters.me)
+def mega_invite(_, msg):
+    """
+    Add tagged user to number of void groups
+    Use carefully!
+    Format: .mega_invite @username 10
+    """
+    _, user, num = msg.text.split(' ', maxsplit=2)
+    num = int(num)
+    for i in range(num):
+        try:
+            chat = app.create_group('Пранк пранка', user)
+            sleep(0.05)
+            app.leave_chat(chat.id, delete=True)
+            sleep(0.05)
+        except FloodWait as e:
+            # TODO: remove
+            print('Waiting', e)
+            sleep(e.value)
+        except UsernameNotOccupied as e:
+            print('User not found')
+            return
 
 
 app.run()
