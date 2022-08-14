@@ -146,7 +146,6 @@ def mention_with_text(_, msg):
     Format: @username[text]
     """
     nickname, text = msg.text[1:-1].split('[')
-    msg.edit('yep')
     msg.delete()
     app.send_message(msg.chat.id, f'[{text}](http://t.me/{nickname})', disable_web_page_preview=True)
 
